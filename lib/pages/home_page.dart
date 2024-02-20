@@ -1,3 +1,5 @@
+import 'package:conversor_moeda/models/moedas_model.dart';
+import 'package:conversor_moeda/repositories/moedas_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -9,6 +11,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  MoedasRepository moedaRepository = MoedasRepository();
+  MoedasModel moeda = MoedasModel();
+
+  void carregarMoedas() async {
+    moeda = await moedaRepository.listarMoedas();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -47,6 +56,7 @@ class _HomePageState extends State<HomePage> {
                   hintText: "R\$ 0,00",
                   fillColor: Colors.white70,
                 ),
+                
               ),
               Text(
                 "Dólar: ",
