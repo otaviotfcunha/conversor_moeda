@@ -1,4 +1,3 @@
-import 'package:conversor_moeda/models/moedas_model.dart';
 import 'package:conversor_moeda/repositories/moedas_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,33 +10,83 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  MoedasRepository moedaRepository = MoedasRepository();
-  MoedasModel moeda = MoedasModel();
-
-  void carregarMoedas() async {
-    moeda = await moedaRepository.listarMoedas();
-  }
+  TextEditingController controllerReal = TextEditingController();
+  TextEditingController controllerDolar = TextEditingController();
+  TextEditingController controllerEuro = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    MoedasRepository moedas = MoedasRepository();
+    moedas.pegarDados();
+
+    void limparCampos() {
+      controllerReal.text = "";
+      controllerDolar.text = "";
+      controllerEuro.text = "";
+    }
+
+    void alteraReal(String texto) {
+      if (texto.isEmpty) {
+        limparCampos();
+      }
+      double? valorReal = double.tryParse(texto);
+
+      if (valorReal != null) {
+        late double? dol = moedas.dolar;
+        late double? eur = moedas.euro;
+        controllerDolar.text = (valorReal * dol!).toStringAsFixed(2);
+        controllerEuro.text = (valorReal * eur!).toStringAsFixed(2);
+      }
+    }
+
+    void alteraDolar(String texto) {
+      if (texto.isEmpty) {
+        limparCampos();
+      }
+      double? valorReal = double.tryParse(texto);
+
+      if (valorReal != null) {
+        late double? dol = moedas.dolar;
+        late double? eur = moedas.euro;
+        double val = valorReal / dol!;
+        controllerReal.text = (val).toStringAsFixed(2);
+        controllerEuro.text = (val * eur!).toStringAsFixed(2);
+      }
+    }
+
+    void alteraEuro(String texto) {
+      if (texto.isEmpty) {
+        limparCampos();
+      }
+      double? valorReal = double.tryParse(texto);
+
+      if (valorReal != null) {
+        late double? dol = moedas.dolar;
+        late double? eur = moedas.euro;
+        double val = valorReal / eur!;
+        controllerReal.text = (val).toStringAsFixed(2);
+        controllerDolar.text = (val * dol!).toStringAsFixed(2);
+      }
+    }
+
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: const Text("Conversor de Moedas"),
       ),
-      body: ListView(children: const [
+      body: ListView(children: [
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Column(
             children: [
-              Center(
+              const Center(
                 child: FaIcon(FontAwesomeIcons.circleDollarToSlot,
                     color: Colors.yellow, size: 140),
               ),
-              Divider(
+              const Divider(
                 color: Colors.blue,
               ),
-              Text(
+              const Text(
                 "Reais: ",
                 style: TextStyle(
                   fontSize: 20,
@@ -47,7 +96,11 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.left,
               ),
               TextField(
-                decoration: InputDecoration(
+                controller: controllerReal,
+                onChanged: alteraReal,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -56,9 +109,8 @@ class _HomePageState extends State<HomePage> {
                   hintText: "R\$ 0,00",
                   fillColor: Colors.white70,
                 ),
-                
               ),
-              Text(
+              const Text(
                 "Dólar: ",
                 style: TextStyle(
                   fontSize: 20,
@@ -68,7 +120,11 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.left,
               ),
               TextField(
-                decoration: InputDecoration(
+                controller: controllerDolar,
+                onChanged: alteraDolar,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -78,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                   fillColor: Colors.white70,
                 ),
               ),
-              Text(
+              const Text(
                 "Euro: ",
                 style: TextStyle(
                   fontSize: 20,
@@ -88,7 +144,11 @@ class _HomePageState extends State<HomePage> {
                 textAlign: TextAlign.left,
               ),
               TextField(
-                decoration: InputDecoration(
+                controller: controllerEuro,
+                onChanged: alteraEuro,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
