@@ -15,6 +15,8 @@ Projeto de conversor de Moeda - Fatec 2023
 graph LR
 A((Inicio)) --> B[Home Page]
 B -- Inserir Real/Dolar/Euro --> C{Consulta HGBrasil}
+C -- Dados Corretos --> D[Exibe Dados]
+C -- Dados incorretos --> B
 ```
 
 ### Minhas redes sociais, conecte-se comigo:
